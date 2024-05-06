@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluvio-sc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluvio-sc
+  template:
+    metadata:
+      labels:
+        app: fluvio-sc
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      nodeSelector:
+        {{- toYaml .Values.scPod.nodeSelector | nindent 8 }}
+      containers:
+        - name: fluvio-sc
+          image: {{ .Values.image.registry }}/fluvio:{{ .Values.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.scPod.resources | nindent 12 }}
+          ports:
+            - containerPort: 9003
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.scLog }}
+            {{ if .Values.scPod.extraEnv }}
+            {{- toYaml .Values.scPod.extraEnv | nindent 12 }}
+            {{ end }}
+          command: ["/fluvio-run", "sc"]
+          args:
+            - --k8
+        {{ if .Values.tls }}
+            - --tls
+            - --enable-client-cert
+            - --ca-cert
+            - /var/certs/ca/ca.crt
+            - --server-cert
+            - /var/certs/tls/tls.crt
+            - --server-key
+            - /var/certs/tls/tls.key
+            - --secret-name
+            - {{ .Values.cert.tls }}
+            - --bind-non-tls-public
+            - 0.0.0.0:9005
+            {{ if .Values.authorizationConfigMap }}
+            - --authorization-policy
+            - /etc/fluvio/authorization/policy.json
+            - --authorization-scopes
+            - /etc/fluvio/authorization/scopes.json
+            {{ end }}
+          volumeMounts:
+            - name: cacert
+              mountPath: /var/certs/ca
+              readOnly: true
+            - name: tls
+              mountPath: /var/certs/tls
+            {{ if .Values.authorizationConfigMap }}
+            - name: authorization-config
+              mountPath: /etc/fluvio/authorization
+            {{ end }}
+            {{ if .Values.scPod.extraVolumeMounts }}
+            {{- toYaml .Values.scPod.extraVolumeMounts | nindent 12 }}
+            {{ end }}
+        {{ end }}
+        {{ if .Values.scPod.extraContainers }}
+        {{- toYaml .Values.scPod.extraContainers | nindent 8 }}
+        {{ end }}
+        {{ if .Values.scPod.extraVolumes }}
+        {{- toYaml .Values.scPod.extraVolumes | nindent 8 }}
+        {{ end }}
+      volumes:
+      {{ if .Values.tls }}
+        - name: cacert
+          secret:
+            secretName: {{ .Values.cert.caCert }}
+        - name: tls
+          secret:
+            secretName: {{ .Values.cert.tls }}
+        {{ if .Values.authorizationConfigMap }}
+        - name: authorization-config
+          configMap:
+            name: {{ .Values.authorizationConfigMap }}
+            items:
+            - key: POLICY
+              path: policy.json
+            - key: SCOPES
+              path: scopes.json
+        {{ end }}
+      {{ end }}

@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fluvio-sc-public
+  annotations:
+    {{- toYaml .Values.loadBalancer.serviceAnnotations | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: fluvio-sc
+{{ if .Values.service.externalTrafficPolicy }}
+    externalTrafficPolicy: .Values.service.externalTrafficPolicy
+{{ end }}
+{{ if .Values.service.externalName }}
+    externalName: {{ .Values.service.externalName }}
+{{ end }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.scPod.publicPort }}
+    targetPort: {{ .Values.scPod.publicPort }}
+{{ if eq .Values.service.type "NodePort" }}
+    nodePort: {{ .Values.scPod.nodePort }}
+{{ end }}
+    

@@ -1,0 +1,50 @@
+# Default values for fluvio.
+
+loadBalancer:
+  serviceAnnotations: {}
+service:
+  type: NodePort
+scLog: info
+tls: false
+imagePullSecrets: []
+image:
+  registry: infinyon
+  tag: ""
+  pullPolicy: IfNotPresent
+cert:
+  caCert: fluvio-ca
+  tls: fluvio-tls
+  domain: fluvio.local
+authorizationConfigMap: ""
+scPod:
+  resources:
+    requests:
+      memory: 512Mi
+    limits:
+      memory: 512Mi
+  nodeSelector: {}
+  publicPort: 9003
+  nodePort: 30003
+  extraContainers: []
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
+spuPod:
+  resources:
+    requests:
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+  nodeSelector: {}
+  storageClass: null
+  baseNodePort: 30004
+  extraContainers: []
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
+
+rbac:
+  create: true
+serviceAccount:
+  name: fluvio
+podSecurityContext: {}
