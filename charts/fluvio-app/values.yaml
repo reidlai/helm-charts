@@ -8,8 +8,8 @@ scLog: info
 tls: false
 imagePullSecrets: []
 image:
-  registry: infinyon
-  tag: ""
+  registry: infinyon/fluvio
+  tag: "stable"
   pullPolicy: IfNotPresent
 cert:
   caCert: fluvio-ca
