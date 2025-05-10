@@ -1,0 +1,3 @@
+[submodule "charts/ollama-helm"]
+	path = charts/ollama-helm
+	url = git@github.com:reidlai/ollama-helm.git
