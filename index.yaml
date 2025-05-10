@@ -2,22 +2,36 @@ apiVersion: v1
 entries:
   fluvio-app:
   - apiVersion: v2
-    created: "2024-05-06T16:52:13.30116-04:00"
+    created: "2025-05-10T10:21:24.076743372-04:00"
     description: A Helm chart for Fluvio
     digest: b82705e45afa70dcd819a71366613f67fc4e6471fce4e56c30a4047459775eea
     name: fluvio-app
     type: application
     urls:
-    - charts/fluvio-app-0.9.3.tgz
+    - https://reidlai.github.io/helm-charts/charts/fluvio-app-0.9.3.tgz
     version: 0.9.3
   fluvio-sys:
   - apiVersion: v2
-    created: "2024-05-06T16:52:13.30173-04:00"
+    created: "2025-05-10T10:21:24.081008366-04:00"
     description: A Helm chart for Fluvio
     digest: a9e60275b0333ac210e05810d549107e2bbd76dd6933306f18187eb1cc8d6d97
     name: fluvio-sys
     type: application
     urls:
-    - charts/fluvio-sys-0.9.16.tgz
+    - https://reidlai.github.io/helm-charts/charts/fluvio-sys-0.9.16.tgz
     version: 0.9.16
-generated: "2024-05-06T16:52:13.299538-04:00"
+  ollama:
+  - apiVersion: v2
+    appVersion: 0.6.8
+    created: "2025-05-10T10:21:24.117308615-04:00"
+    description: Get up and running with large language models locally.
+    digest: df89c7ffdfb6d9f0bdbd2cd32c7aa453e2164e80ca6fd26b73df8b5687f373d6
+    name: ollama
+    sources:
+    - https://github.com/ollama/ollama
+    - https://github.com/otwld/ollama-helm
+    type: application
+    urls:
+    - https://reidlai.github.io/helm-charts/charts/ollama-1.16.0.tgz
+    version: 1.16.0
+generated: "2025-05-10T10:21:24.071620353-04:00"
